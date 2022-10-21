@@ -43,7 +43,7 @@ def escribir_log(nombre_archivo, cliente, exitosa, tiempo):
     f.close()
 
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Crea Socket TCP
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Crea Socket UDP
 host = socket.gethostname()  # Toma el nombre de la maquina local
 port = 29170  # Reserva el puerto
 s.bind(('', port))  # Vincula el host al puerto
