@@ -1,0 +1,7 @@
+# Constantes:
+NOMBRE_ARCHIVO_100M = 'archivo_100M'
+NOMBRE_ARCHIVO_250M = 'archivo_250M'
+
+RUTA_ARCHIVO_100M = '../ARCHIVOS/archivo_100M'
+RUTA_ARCHIVO_250M = '../ARCHIVOS/archivo_250M'
+RUTA_DIR_LOGS = '../Logs/'

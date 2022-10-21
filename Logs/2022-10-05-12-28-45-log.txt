@@ -1,0 +1,6 @@
+---------Envio------------
+Archivo enviado: archivo_100M de tamaño: 100 Mb
+Enviado a: 192.168.20.29
+Envio exitoso: SI
+Tiempo de tranferencia: 2 segundos.
+--------------------------

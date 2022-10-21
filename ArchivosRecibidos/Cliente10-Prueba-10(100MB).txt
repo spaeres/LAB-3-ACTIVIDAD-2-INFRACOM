@@ -1,0 +1,4 @@
+------------Recibido-------------
+Archivo recibido:   archivo_100M de tamaño 100MB
+El hash recibido es diferente al hash del archivo recibido
+hash esperado: 7b6e219f812d8a90ba78d721f2cb1b44
