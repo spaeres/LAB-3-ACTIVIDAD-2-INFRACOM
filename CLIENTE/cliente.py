@@ -59,11 +59,11 @@ def comparar_hash(archivo_recibido, hash_recibido):
 
 
 # Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Connect the socket to the port on the server
 # given by the caller
-host = '192.168.85.128'
+host = '192.168.20.34'
 port = 29170
 hash = ""
 server_address = (host, port)
