@@ -75,9 +75,8 @@ escribir_directorio()
 try:
     entrada0= input('¿Cuantos clientes desea? (Minimo 1 - maximo 25)\n')
     for i in range(int(entrada0)):
-        message = b'Hola, estoy listo para recibir archivos |'
+        message = b'Hola, estoy listo para recibir archivos |'+bytes(sock.getsockname()[0], 'ascii')+b"|"+bytes(str(sock.getsockname()[1]), 'ascii')
         sock.send(message)
-        
         dataInicial = sock.recv(1024)
         print('Recibi tu mensaje: {!r}'.format(dataInicial))
 
@@ -85,11 +84,11 @@ try:
         rutaDeseada = ''
         ruta_archivo = ''
         nombre_archivo = ''
-        if (entrada1 == "100MB"):
+        if entrada1 == "100MB":
             nombre_archivo = NOMBRE_ARCHIVO_100M
             ruta_archivo = RUTA_ARCHIVO_100M
             rutaDeseada = b'archivo_100M'
-        elif (entrada1 == "250MB"):
+        elif entrada1 == "250MB":
             nombre_archivo = NOMBRE_ARCHIVO_250M
             ruta_archivo = RUTA_ARCHIVO_250M
             rutaDeseada = b'archivo_250M'
@@ -111,7 +110,7 @@ try:
         l = sock.recv(1024)
         despedida = ''
         while (l):
-            paquete = l.decode('latin1')
+            paquete = l.decode('ascii')
             print("Recibiendo archivo...")
             # Ultimo paquete del archivo es el que termina con |:
             if '|' in paquete:

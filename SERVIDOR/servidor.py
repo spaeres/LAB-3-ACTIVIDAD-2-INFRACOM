@@ -48,23 +48,30 @@ host = socket.gethostname()  # Toma el nombre de la maquina local
 port = 29170  # Reserva el puerto
 s.bind(('', port))  # Vincula el host al puerto
 
+# Info del cliente:
+ip_del_cliente = ''
+puerto_cliente = ''
+
 while True:
     print('Esperando conexiones...')
     buffer = ''
     # c, addr = s.accept()  UDP es connectionless
-    # Lee el tipo de archivo que necesita el cliente:
+    # Lee el mensaje de Hola del cliente, con su respectiva IP y puerto:
     data, addr = s.recvfrom(4096)
     if data:
         buffer += data.decode('ascii')
-        print(buffer)
-        s.send(b'HOLA!')
+        # Info del cliente:
+        ip_del_cliente = buffer.split("|")[1]
+        puerto_cliente = int(buffer.split("|")[2])
+        print(ip_del_cliente, puerto_cliente)
+        s.sendto(b'HOLA!', (ip_del_cliente, puerto_cliente))
     else:
         print("SALE")
         break
     f = ''
     buffer = ''
     nombre_archivo = ''
-    data = s.recvfrom(1024)
+    data, addr = s.recvfrom(4096)
     if data:
         buffer += data.decode('ascii')
         print(buffer)
@@ -82,12 +89,12 @@ while True:
     try:
         tiempo_inicio = round(time.time())
         exitoso = True
-        s.send(hash.encode(encoding='UTF-8'))
+        s.sendto(hash.encode(encoding='UTF-8'), (ip_del_cliente, puerto_cliente))
         l = f.read(10024)
 
         while l:
             print("Enviando Archivo...")
-            s.send(l)
+            s.sendto(l, (ip_del_cliente, puerto_cliente))
             l = f.read(10024)
         f.close()
     except Exception as e:
@@ -97,6 +104,6 @@ while True:
     tiempo_final = round(time.time())
     escribir_log(nombre_archivo, addr, exitoso, (tiempo_final - tiempo_inicio))
     print("Enviado exitosamente")
+    s.sendto(b'|Gracias por conectarse. Archivo enviado.', (ip_del_cliente, puerto_cliente))
     s.shutdown(socket.SHUT_WR)
-    # c.send(b'|Gracias por conectarse. Archivo enviado.')
     s.close()  # Cerrar conexion
