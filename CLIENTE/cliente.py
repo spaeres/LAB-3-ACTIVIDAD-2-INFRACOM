@@ -60,8 +60,8 @@ def comparar_hash(archivo_recibido, hash_recibido):
     return iguales, digest
 
 
-def verificar_transferencia_exitosa(numero_paquetes_recibidos, numero_paquetes_esperados):
-    return numero_paquetes_recibidos == numero_paquetes_esperados
+def verificar_transferencia_exitosa(numero_bytes_recibidos, numero_bytes_esperados):
+    return numero_bytes_recibidos == numero_bytes_esperados
 
 
 # Create a UDP socket
@@ -81,14 +81,12 @@ escribir_directorio()
 try:
     entrada0 = input('¿Cuantos clientes desea? (Minimo 1 - maximo 25)\n')
     for i in range(int(entrada0)):
-        message = b'Hola, estoy listo para recibir archivos |' + bytes(sock.getsockname()[0], 'ascii') + b"|" + bytes(
-            str(sock.getsockname()[1]), 'ascii')
+        message = b'Hola, estoy listo para recibir archivos |' + bytes(sock.getsockname()[0], 'ascii') + b"|" + bytes(str(sock.getsockname()[1]), 'ascii')
         sock.send(message)
         dataInicial = sock.recv(1024)
         print('Recibi tu mensaje: {!r}'.format(dataInicial))
 
-        entrada1 = input(
-            'Que archivo quieres? 100 MB o 250 MB? (Por favor escribir unicamente el que desea: Ej: "100MB")\n')
+        entrada1 = input('Que archivo quieres? 100 MB o 250 MB? (Por favor escribir unicamente el que desea: Ej: "100MB")\n')
         rutaDeseada = ''
         ruta_archivo = ''
         nombre_archivo = ''
@@ -102,20 +100,9 @@ try:
             rutaDeseada = b'archivo_250M'
 
         sock.send(rutaDeseada)
-        # HASH:
-        dataHash = sock.recv(1024)
-        datosArchivoRestantes = ''
-        if dataHash:
-            recibido = dataHash.decode('latin1')
-            nombre = recibido[0:recibido.index('|')]
-            datosArchivoRestantes = recibido[recibido.index('|') + 1:len(recibido)]
-        else:
-            raise Exception('Deberia recibir el hash')
-
-        print('Hash recibido:' + nombre)
         # Archivo:
         f = open(ruta_archivo, 'wb')
-        l = sock.recv(1024)
+        l = sock.recv(10024)
         despedida = ''
         while (l):
             paquete = l.decode('ascii')
@@ -126,16 +113,22 @@ try:
                 # No se escribe el ultimo paquete!
                 break
             f.write(l)
-            l = sock.recv(1024)
+            l = sock.recv(10024)
+        archivo_nueva_ruta = f.name
         f.close()
         print('Recibido: ', despedida)
-        print('Verificando integridad del archivo....')
-        comparacion = comparar_hash(nombre_archivo, nombre)
-        print('Hash verificado correctamente!') if comparacion[0] else print(
-            'Hash enviado por el servidor no es correcto:' + nombre + "!=" + comparacion[1])
-        x = i + 1
-        escribir_log(str(x), entrada0, entrada1, comparacion[0], comparacion[1])
         print('Verificando transferencia exitosa....')
+        tamanno_archivo_recibido = os.path.getsize(archivo_nueva_ruta)
+        tammano_archivo_esperado = int(despedida.split("|")[1])
+        print('Transferencia Exitosa: '+str(verificar_transferencia_exitosa(tamanno_archivo_recibido, tammano_archivo_esperado)))
+        print('Bytes recibidos: '+str(tamanno_archivo_recibido))
+        print('Bytes esperados: ' + str(tammano_archivo_esperado))
+        print('Tasa de transferecnia:: ' + str(tammano_archivo_esperado))
+        x = i + 1
+        #escribir_log(str(x), entrada0, entrada1, comparacion[0], comparacion[1])
+
         print('Recibido despedida server: ' + despedida)
-finally:
+except Exception as e:
+    print("Error: " + e.__str__())
+    exitoso = False
     sock.close()

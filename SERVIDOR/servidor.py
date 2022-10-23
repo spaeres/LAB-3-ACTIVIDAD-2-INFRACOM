@@ -3,6 +3,7 @@ import hashlib
 import datetime
 from signal import signal, SIGPIPE, SIG_DFL
 import time
+import os
 
 signal(SIGPIPE, SIG_DFL)
 
@@ -27,7 +28,7 @@ def hash_archivo(nombre_archivo):
     return digest
 
 
-def escribir_log(nombre_archivo, cliente, exitosa, tiempo):
+def escribir_log(nombre_archivo, cliente, exitosa, tiempo, puerto_cliente, tasa_transferencia):
     nombre_log = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S").__str__() + '-log'
     f = open(RUTA_DIR_LOGS + nombre_log + ".txt", "a")
     f.write("---------Envio------------\n")
@@ -36,6 +37,8 @@ def escribir_log(nombre_archivo, cliente, exitosa, tiempo):
     else:
         f.write("Archivo enviado: " + nombre_archivo + " de tamaño: " + "250 Mb\n")
     f.write("Enviado a: " + str(cliente[0]) + "\n")
+    f.write("Puerto Cliente: " + str(puerto_cliente) + "\n")
+    f.write("Tasa de transferencia: " + str(tasa_transferencia)+" Mbps" + "\n")
     envio_exitoso = 'SI' if exitosa else 'NO'
     f.write("Envio exitoso: " + envio_exitoso + "\n")
     f.write("Tiempo de tranferencia: " + str(tiempo) + " segundos.\n")
@@ -71,25 +74,27 @@ while True:
     f = ''
     buffer = ''
     nombre_archivo = ''
+    tamanno_archivo = ''
     data, addr = s.recvfrom(4096)
     if data:
         buffer += data.decode('ascii')
         print(buffer)
         if buffer == NOMBRE_ARCHIVO_100M:
             nombre_archivo = NOMBRE_ARCHIVO_100M
+            tamanno_archivo = str(os.path.getsize(RUTA_ARCHIVO_100M))
             f = open(RUTA_ARCHIVO_100M, 'rb')
         else:
             nombre_archivo = NOMBRE_ARCHIVO_250M
+            tamanno_archivo = str(os.path.getsize(RUTA_ARCHIVO_250M))
             f = open(RUTA_ARCHIVO_250M, 'rb')
     else:
         print("SALE")
         break
-    hash = hash_archivo(nombre_archivo) + '|'
-    print("Enviando Hash..." + hash)
+    # hash = hash_archivo(nombre_archivo) + '|'
+    # print("Enviando Hash..." + hash)
     try:
         tiempo_inicio = round(time.time())
         exitoso = True
-        s.sendto(hash.encode(encoding='UTF-8'), (ip_del_cliente, puerto_cliente))
         l = f.read(10024)
 
         while l:
@@ -102,8 +107,10 @@ while True:
         exitoso = False
         break
     tiempo_final = round(time.time())
-    escribir_log(nombre_archivo, addr, exitoso, (tiempo_final - tiempo_inicio))
+    #Tasa de transferencia en Mbps:
+    tasa_transferencia = (int(tamanno_archivo) * 8)/(tiempo_final*1000)
+    escribir_log(nombre_archivo, addr, exitoso, (tiempo_final - tiempo_inicio), puerto_cliente, tasa_transferencia)
     print("Enviado exitosamente")
-    s.sendto(b'|Gracias por conectarse. Archivo enviado.', (ip_del_cliente, puerto_cliente))
-    s.shutdown(socket.SHUT_WR)
-    s.close()  # Cerrar conexion
+    s.sendto(b'|Gracias por conectarse. Archivo enviado|' + bytes(tamanno_archivo, 'ascii'), (ip_del_cliente, puerto_cliente))
+    #s.shutdown(socket.SHUT_WR)
+    #s.close()  # Cerrar conexion

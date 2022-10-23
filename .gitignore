@@ -225,3 +225,5 @@ fabric.properties
 
 #Archivos para enviar
 /ARCHIVOS
+/CLIENTE/ArchivosRecibidos/archivo_250M
+/CLIENTE/ArchivosRecibidos/archivo_100M
