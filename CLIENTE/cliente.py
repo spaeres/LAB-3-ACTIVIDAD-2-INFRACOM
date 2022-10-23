@@ -123,7 +123,6 @@ try:
         print('Transferencia Exitosa: '+str(verificar_transferencia_exitosa(tamanno_archivo_recibido, tammano_archivo_esperado)))
         print('Bytes recibidos: '+str(tamanno_archivo_recibido))
         print('Bytes esperados: ' + str(tammano_archivo_esperado))
-        print('Tasa de transferecnia:: ' + str(tammano_archivo_esperado))
         x = i + 1
         #escribir_log(str(x), entrada0, entrada1, comparacion[0], comparacion[1])
 
