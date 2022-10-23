@@ -27,7 +27,7 @@ def escribir_directorio():
             raise
 
 
-def escribir_log(x, y, tipo_archivo, exito, hash):
+def escribir_log(x, y, tipo_archivo, bRecibidos, bEsperados, exito):
     nombre_log = "Cliente" + x + "-Prueba-" + y + "(" + tipo_archivo + ").txt"
     file = open("./ArchivosRecibidos/" + nombre_log, "a")
     file.write("------------Recibido-------------\n")
@@ -35,12 +35,14 @@ def escribir_log(x, y, tipo_archivo, exito, hash):
         file.write("Archivo recibido:   " + NOMBRE_ARCHIVO_100M + " de tamaño 100MB\n")
     elif (tipo_archivo == "250MB"):
         file.write("Archivo recibido:   " + NOMBRE_ARCHIVO_250M + " de tamaño 250MB\n")
-    if (exito):
-        file.write("El hash recibido es igual al hash del archivo recibido\n")
+    
+    if(exito==True):
+        file.write("Trasnferencia exitosa\n")
     else:
-        file.write("El hash recibido es diferente al hash del archivo recibido\n")
+        file.write("Trasnferencia fallida\n")
 
-    file.write("hash esperado: " + hash)
+    file.write("Bytes recibidos: " + bRecibidos+"\n")
+    file.write("Bytes esperados: " + bEsperados+"\n")
     file.close()
 
 
@@ -120,11 +122,12 @@ try:
         print('Verificando transferencia exitosa....')
         tamanno_archivo_recibido = os.path.getsize(archivo_nueva_ruta)
         tammano_archivo_esperado = int(despedida.split("|")[1])
-        print('Transferencia Exitosa: '+str(verificar_transferencia_exitosa(tamanno_archivo_recibido, tammano_archivo_esperado)))
+        exito1 = verificar_transferencia_exitosa(tamanno_archivo_recibido, tammano_archivo_esperado)
+        print('Transferencia Exitosa: '+str(exito1))
         print('Bytes recibidos: '+str(tamanno_archivo_recibido))
         print('Bytes esperados: ' + str(tammano_archivo_esperado))
         x = i + 1
-        #escribir_log(str(x), entrada0, entrada1, comparacion[0], comparacion[1])
+        escribir_log(str(x), entrada0, entrada1, tamanno_archivo_recibido, tammano_archivo_esperado, exito1)
 
         print('Recibido despedida server: ' + despedida)
 except Exception as e:
