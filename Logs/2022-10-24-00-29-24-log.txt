@@ -1,0 +1,8 @@
+---------Envio------------
+Archivo enviado: archivo_250M de tamaño: 250 Mb
+Enviado a: 192.168.20.29
+Puerto Cliente: 58016
+Tasa de transferencia: 0.0012583631544635355 Mbps
+Envio exitoso: SI
+Tiempo de tranferencia: 6 segundos.
+--------------------------

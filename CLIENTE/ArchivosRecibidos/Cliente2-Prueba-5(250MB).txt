@@ -1,0 +1,5 @@
+------------Recibido-------------
+Archivo recibido:   archivo_250M de tamaño 250MB
+Trasnferencia fallida
+Bytes recibidos: 261662848
+Bytes esperados: 262144000
