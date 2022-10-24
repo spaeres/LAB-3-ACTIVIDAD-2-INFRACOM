@@ -46,22 +46,6 @@ def escribir_log(x, y, tipo_archivo, bRecibidos, bEsperados, exito):
     file.close()
 
 
-def comparar_hash(archivo_recibido, hash_recibido):
-    iguales = False
-    md5_hash = hashlib.md5()
-    if archivo_recibido == NOMBRE_ARCHIVO_100M:
-        a_file = open(RUTA_ARCHIVO_100M, "rb")
-    else:
-        a_file = open(RUTA_ARCHIVO_250M, "rb")
-    content = a_file.read()
-    md5_hash.update(content)
-
-    digest = md5_hash.hexdigest()
-    if (digest == hash_recibido):
-        iguales = True
-    return iguales, digest
-
-
 def verificar_transferencia_exitosa(numero_bytes_recibidos, numero_bytes_esperados):
     return numero_bytes_recibidos == numero_bytes_esperados
 
@@ -127,7 +111,7 @@ try:
         print('Bytes recibidos: '+str(tamanno_archivo_recibido))
         print('Bytes esperados: ' + str(tammano_archivo_esperado))
         x = i + 1
-        escribir_log(str(x), entrada0, entrada1, tamanno_archivo_recibido, tammano_archivo_esperado, exito1)
+        escribir_log(str(x), str(entrada0), entrada1, str(tamanno_archivo_recibido), str(tammano_archivo_esperado), exito1)
 
         print('Recibido despedida server: ' + despedida)
 except Exception as e:
